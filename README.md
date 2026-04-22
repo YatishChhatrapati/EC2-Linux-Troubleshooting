@@ -254,6 +254,6 @@ CPU utilization alarm configured on Ubuntu EC2 instance:
 
 ## About
 
-6+ years of operations & support experience at Accenture and Genpact
+6+ years of Operations & Support experience at Accenture and Genpact
 — transitioning into AWS Cloud Support Engineering.
 All scenarios practised on AWS Free Tier using Ubuntu Server.
