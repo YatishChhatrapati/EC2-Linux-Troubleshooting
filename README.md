@@ -1,6 +1,6 @@
-# AWS EC2 & Linux Troubleshooting Scenarios
+# AWS EC2 & Linux — Deployment and Troubleshooting
 
-Hands-on troubleshooting scenarios practised on AWS Free Tier
+Hands-on deployment and troubleshooting scenarios practised on AWS Free Tier
 using Ubuntu Server — part of my transition into Cloud Support Engineering.
 
 ---
@@ -8,8 +8,8 @@ using Ubuntu Server — part of my transition into Cloud Support Engineering.
 ## Environment
 
 - Amazon EC2 — Ubuntu Server (Free Tier)
-- AWS Security Groups and NACLs
-- Amazon CloudWatch
+- AWS Security Groups
+- Amazon CloudWatch — Metrics, Alarms, SNS
 - Ubuntu Linux CLI — SSH, top, ps, kill, tail, grep, systemctl, apt
 - AWS Management Console
 
@@ -224,6 +224,42 @@ CPU utilization alarm configured on Ubuntu EC2 instance:
 
 ---
 
+## Incident SOP — High CPU Utilization
+
+```
+========================================
+SOP: High CPU Utilization — EC2 Instance
+========================================
+
+Incident ID   : INC-001
+Severity      : High
+Instance Type : Ubuntu EC2 (t2.micro)
+
+TIMELINE:
+T+00 — CloudWatch alarm triggered (CPU > 80%)
+T+02 — SSH into instance, ran: top -c
+T+04 — Identified runaway process via ps aux
+T+05 — Executed: kill -9 <PID>
+T+06 — CPU dropped to normal range
+T+08 — CloudWatch alarm auto-resolved
+T+10 — Apache status verified: systemctl status apache2
+
+ROOT CAUSE:
+Uncontrolled background process consuming excessive CPU.
+
+RESOLUTION:
+Runaway process terminated via Linux CLI.
+CPU utilization normalized within 2 minutes.
+
+PREVENTION:
+1. CloudWatch alarm at 80% threshold (configured)
+2. Regular log review via /var/log/syslog
+3. Enable detailed monitoring on EC2 instance
+========================================
+```
+
+---
+
 ## Ubuntu vs Amazon Linux — Key Differences
 
 | Task | Ubuntu | Amazon Linux |
@@ -240,15 +276,16 @@ CPU utilization alarm configured on Ubuntu EC2 instance:
 
 | Skill | Scenario |
 |---|---|
-| EC2 Ubuntu troubleshooting | 1, 2, 3 |
+| EC2 Ubuntu launch and configuration | 1, 2 |
+| Apache web server setup | 2, 4 |
+| SSH key pair access | 1, 2, 3 |
 | Security Group diagnosis | 1, 2 |
 | Ubuntu Linux CLI | All |
-| Apache2 on Ubuntu | 2, 4 |
 | Log analysis — tail, grep, journalctl | 4 |
-| CloudWatch monitoring | 3 |
+| CloudWatch monitoring and alarms | 3 |
 | Process management — top, ps, kill | 3 |
 | Root cause analysis (RCA) | All |
-| Incident documentation | All |
+| Incident SOP documentation | 3 |
 
 ---
 
